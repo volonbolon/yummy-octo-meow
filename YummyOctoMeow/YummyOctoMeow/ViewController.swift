@@ -39,24 +39,35 @@ class ViewController: UIViewController {
                 NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                     self.usernameLabel.text = username
                 })
-            } else {
-                let errorCode = error.code as! UInt32
+            } else if error != nil {
+                let errorCode = UInt32(error.code)
+                var title:String?
+                var msg:String?
                 if errorCode == ACErrorAccountNotFound.value {
-                    println("nones")
+                    title = NSLocalizedString("No Account", comment: "No Account")
+                    msg = NSLocalizedString("Please, login in settings", comment: "Please, login in settings")
+                } else if errorCode == ACErrorPermissionDenied.value {
+                    title = NSLocalizedString("Permission Denied", comment: "Permission Denied")
+                    msg = NSLocalizedString("Please, flip permissions in settings", comment: "Please, flip permissions in settings")
+                } else {
+                    title = error.localizedDescription
+                    msg = error.localizedFailureReason
                 }
+                self.presentAlertWithTitle(title, message: msg)
+            } else {
+                let title = NSLocalizedString("Permission Denied", comment: "Permission Denied")
+                let msg = NSLocalizedString("Please, flip permissions in settings", comment: "Please, flip permissions in settings")
+                self.presentAlertWithTitle(title, message: msg)
             }
         }
     }
+    
+    func presentAlertWithTitle(title:String?, message:String?) {
+        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+            let controller = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+            let cancelAction = UIAlertAction(title: NSLocalizedString("OK", comment: "OK"), style: UIAlertActionStyle.Default, handler: nil)
+            controller.addAction(cancelAction)
+            self.presentViewController(controller, animated: true, completion: nil)
+        })
+    }
 }
-
-//
-//dispatch_async(dispatch_get_main_queue(), ^{
-//    
-//    // Fail gracefully...
-//    NSLog(@"%@",error.description);
-//    if([error code]== ACErrorAccountNotFound)
-//    [self throwAlertWithTitle:@"Error" message:@"Account not found. Please setup your account in settings app."];
-//    else
-//    [self throwAlertWithTitle:@"Error" message:@"Account access denied."];
-//    
-//    });

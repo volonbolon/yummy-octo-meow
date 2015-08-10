@@ -28,11 +28,14 @@ class ViewController: UIViewController {
     func facebookLogin() {
         self.accountStore = ACAccountStore()
         let accountType = self.accountStore.accountTypeWithAccountTypeIdentifier(ACAccountTypeIdentifierFacebook)
-        let appID = "key" //
+        let appID = "988286564524796"
         let fbInfo = [ACFacebookAppIdKey:appID, ACFacebookPermissionsKey:["email"], ACFacebookAudienceKey:ACFacebookAudienceEveryone]
         self.accountStore.requestAccessToAccountsWithType(accountType, options: fbInfo as! [NSObject:AnyObject]) { (granted:Bool, error:NSError!) -> Void in
             if granted == true {
-                println("Hola")
+                let accounts = self.accountStore.accountsWithAccountType(accountType)
+                self.fbAccount = accounts.last as! ACAccount
+                let username = self.fbAccount.username
+                println("\(username)")
             } else {
                 println("Nones")
             }
@@ -40,39 +43,3 @@ class ViewController: UIViewController {
     }
 
 }
-
-
-
-//
-//-(void) facebookLogin
-//    {
-//        NSLog(@"Trying to access FB account.");
-//        
-//        self.accountStore = [[ACAccountStore alloc]init];
-//        ACAccountType *FBaccountType= [self.accountStore
-//        accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-//        
-//        NSString *appID = @"1540000000000031"; //The app ID issued by Facebook
-//        NSDictionary *dictFB = [NSDictionary dictionaryWithObjectsAndKeys:
-//        appID, ACFacebookAppIdKey,
-//        @[@"email"], ACFacebookPermissionsKey,
-//        nil];
-//        
-//        [self.accountStore requestAccessToAccountsWithType:FBaccountType options:dictFB completion:
-//        ^(BOOL granted, NSError *e) {
-//        if (granted)
-//        {
-//        NSArray *accounts = [self.accountStore accountsWithAccountType:FBaccountType];
-//        //it will always be the last object with single sign on
-//        self.facebookAccount = [accounts lastObject];
-//        
-//        
-//        ACAccountCredential *facebookCredential = [self.facebookAccount credential];
-//        NSString *accessToken = [facebookCredential oauthToken];
-//        NSLog(@"Successfully logged in. Access Token: %@", accessToken);
-//        } else {
-//        //Failed
-//        NSLog(@"error getting permission: %@",e);
-//        }
-//        }];
-//}

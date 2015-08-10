@@ -12,6 +12,7 @@ import Accounts
 class ViewController: UIViewController {
     var accountStore:ACAccountStore!
     var fbAccount:ACAccount!
+    @IBOutlet weak var usernameLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,11 +36,27 @@ class ViewController: UIViewController {
                 let accounts = self.accountStore.accountsWithAccountType(accountType)
                 self.fbAccount = accounts.last as! ACAccount
                 let username = self.fbAccount.username
-                println("\(username)")
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    self.usernameLabel.text = username
+                })
             } else {
-                println("Nones")
+                let errorCode = error.code as! UInt32
+                if errorCode == ACErrorAccountNotFound.value {
+                    println("nones")
+                }
             }
         }
     }
-
 }
+
+//
+//dispatch_async(dispatch_get_main_queue(), ^{
+//    
+//    // Fail gracefully...
+//    NSLog(@"%@",error.description);
+//    if([error code]== ACErrorAccountNotFound)
+//    [self throwAlertWithTitle:@"Error" message:@"Account not found. Please setup your account in settings app."];
+//    else
+//    [self throwAlertWithTitle:@"Error" message:@"Account access denied."];
+//    
+//    });

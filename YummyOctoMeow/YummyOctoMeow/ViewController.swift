@@ -10,24 +10,22 @@ import UIKit
 import Accounts
 
 class ViewController: UIViewController, GPPSignInDelegate {
+    @IBOutlet weak var usernameLabel: UILabel!
+    
     var accountStore:ACAccountStore!
     var fbAccount:ACAccount!
     var gpSignIn:GPPSignIn?
-    
-    @IBOutlet weak var usernameLabel: UILabel!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
-//        self.facebookLogin()
 
+        // Setup Google
         self.gpSignIn = GPPSignIn.sharedInstance()
         self.gpSignIn?.shouldFetchGooglePlusUser = true
         self.gpSignIn?.clientID = "914516035853-5j0lfk9jkdqjac5tvjajhg9ocslgjgu4.apps.googleusercontent.com"
         self.gpSignIn?.delegate = self
         self.gpSignIn?.scopes = [kGTLAuthScopePlusLogin, kGTLAuthScopePlusUserinfoEmail]
-        self.gpSignIn?.authenticate()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,8 +33,13 @@ class ViewController: UIViewController, GPPSignInDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    // client OAuth 914516035853-5j0lfk9jkdqjac5tvjajhg9ocslgjgu4.apps.googleusercontent.com
+    @IBAction func signinWithGoogle(sender: AnyObject) {
+        self.gpSignIn?.authenticate()
+    }
     
+    @IBAction func signinWithFacebook(sender: AnyObject) {
+        self.facebookLogin()
+    }
     // MARK: G+
     func finishedWithAuth(auth: GTMOAuth2Authentication!, error: NSError!) {
         guard error == nil else { return }
@@ -47,27 +50,12 @@ class ViewController: UIViewController, GPPSignInDelegate {
         plusService.retryEnabled = true
         plusService.authorizer = self.gpSignIn?.authentication
         plusService.apiVersion = "v1"
-        plusService.executeQuery(query as! GTLQueryProtocol, delegate: self, didFinishSelector: Selector("serviceTicket:finishedWithObject:error:"))
-//        plusService.executeQuery(query) { (ticket:GTLServiceTicket!, person:GTLPlusPerson!, error:NSError!) -> Void in
-//            let email = self.gpSignIn?.authentication.userEmail
-//            let p = person as! GTLPlusPerson
-//        }
-        
-//        let query:GTLQueryPlus = GTLQueryPlus.queryForPeopleGetWithUserId("me")
-        
-        
-        
-//        
-//
-//        
-//        print("email: \(email) || userId: \(userId)")
-    }
-    
-    func serviceTicket(ticket:GTLServiceTicket, finishedWithObject object:GTLObject, error:NSError?) {
-        if let person = object as? GTLPlusPerson {
-            let email = person.emails.last as! GTLPlusPersonEmailsItem
-            let userId = person.identifier
-            print("email: \(email.value) || userId: \(userId)")
+        plusService.executeQuery(query as! GTLQueryProtocol) { (ticket:GTLServiceTicket!, object:AnyObject!, error:NSError!) -> Void in
+            if let person = object as? GTLPlusPerson {
+                let email = person.emails.last as! GTLPlusPersonEmailsItem
+                let userId = person.identifier
+                self.usernameLabel.text = "email: \(email.value) || userId: \(userId)"
+            }
         }
     }
     

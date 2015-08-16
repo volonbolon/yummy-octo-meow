@@ -31,8 +31,8 @@ class ViewController: UIViewController {
         let accountType = self.accountStore.accountTypeWithAccountTypeIdentifier(ACAccountTypeIdentifierFacebook)
         let appID = "988286564524796"
         let fbInfo = [ACFacebookAppIdKey:appID, ACFacebookPermissionsKey:["email"], ACFacebookAudienceKey:ACFacebookAudienceEveryone]
-        self.accountStore.requestAccessToAccountsWithType(accountType, options: fbInfo as! [NSObject:AnyObject]) { (granted:Bool, error:NSError!) -> Void in
-            if granted == true {
+        self.accountStore.requestAccessToAccountsWithType(accountType, options: fbInfo as [NSObject:AnyObject]) { (granted:ObjCBool, error:NSError!) -> Void in
+            if granted.boolValue == true {
                 let accounts = self.accountStore.accountsWithAccountType(accountType)
                 self.fbAccount = accounts.last as! ACAccount
                 let username = self.fbAccount.username
@@ -43,10 +43,10 @@ class ViewController: UIViewController {
                 let errorCode = UInt32(error.code)
                 var title:String?
                 var msg:String?
-                if errorCode == ACErrorAccountNotFound.value {
+                if errorCode == ACErrorAccountNotFound.rawValue {
                     title = NSLocalizedString("No Account", comment: "No Account")
                     msg = NSLocalizedString("Please, login in settings", comment: "Please, login in settings")
-                } else if errorCode == ACErrorPermissionDenied.value {
+                } else if errorCode == ACErrorPermissionDenied.rawValue {
                     title = NSLocalizedString("Permission Denied", comment: "Permission Denied")
                     msg = NSLocalizedString("Please, flip permissions in settings", comment: "Please, flip permissions in settings")
                 } else {

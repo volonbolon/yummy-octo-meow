@@ -160,6 +160,8 @@
 		B0BCF85E1B7923370083AA31 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Ariel Rodriguez";
 				TargetAttributes = {
@@ -413,6 +415,7 @@
 				B0BCF8871B7923370083AA31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B0BCF8881B7923370083AA31 /* Build configuration list for PBXNativeTarget "YummyOctoMeowTests" */ = {
 			isa = XCConfigurationList;
@@ -421,6 +424,7 @@
 				B0BCF88A1B7923370083AA31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
